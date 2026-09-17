@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Boletim+</title>
+<style>
+  :root {
+    --papel: #fbfcfd;
+    --tinta: #1f2a33;
+    --tinta-suave: #5c6b77;
+    --linha: #dde3e8;
+    --azul: #1e88e5;
+    --verde: #2e7d32;
+    --vermelho: #d32f2f;
+    --trilho: #b4bec7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --papel: #1b2229;
+      --tinta: #e6ebef;
+      --tinta-suave: #9aa8b3;
+      --linha: #33404b;
+      --verde: #5cbf62;
+      --vermelho: #ef6b6b;
+      --trilho: #56636e;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    width: 320px;
+    margin: 0;
+    background: var(--papel);
+    color: var(--tinta);
+    font: 13px/1.4 system-ui, "Segoe UI", Roboto, Ubuntu, sans-serif;
+  }
+
+  /* faixa do topo: uma linha de diário com as notas coloridas */
+  .diario {
+    display: grid;
+    grid-template-columns: 1fr repeat(3, 34px);
+    align-items: end;
+    gap: 0 2px;
+    padding: 14px 16px 10px;
+    border-bottom: 2px solid var(--azul);
+  }
+  .diario h1 { margin: 0; font-size: 14px; line-height: 1.2; white-space: nowrap; }
+  .diario small { display: block; color: var(--tinta-suave); font-size: 11px; margin-top: 2px; }
+  .nota { text-align: center; font-variant-numeric: tabular-nums; }
+  .nota span { display: block; font-size: 10px; color: var(--tinta-suave); }
+  .nota b { font-size: 15px; }
+  .nota.verde b { color: var(--verde); }
+  .nota.vermelho b { color: var(--vermelho); }
+  .diario.sem-cor .nota b { color: var(--tinta); }
+
+  form { padding: 4px 0 0; }
+  fieldset { border: 0; margin: 0; padding: 0; }
+  fieldset:disabled .opcao { opacity: 0.45; }
+  legend {
+    padding: 12px 16px 2px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--tinta-suave);
+  }
+
+  .opcao {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  .sub + .sub { border-top: 1px solid var(--linha); }
+  .opcao.sub { padding-left: 32px; }
+  .opcao strong { display: block; font-weight: 600; }
+  .opcao small { display: block; color: var(--tinta-suave); font-size: 11.5px; }
+  .principal { border-bottom: 1px solid var(--linha); }
+
+  /* interruptor: checkbox nativo com aparência de switch */
+  input[type="checkbox"] {
+    appearance: none;
+    position: relative;
+    width: 34px;
+    height: 20px;
+    margin: 0;
+    border-radius: 10px;
+    background: var(--trilho);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  input[type="checkbox"]::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s;
+  }
+  input[type="checkbox"]:checked { background: var(--azul); }
+  input[type="checkbox"]:checked::after { transform: translateX(14px); }
+  input[type="checkbox"]:focus-visible { outline: 2px solid var(--azul); outline-offset: 2px; }
+  input[type="checkbox"]:disabled { cursor: default; }
+
+  footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px 12px;
+    margin-top: 6px;
+    border-top: 1px solid var(--linha);
+    color: var(--tinta-suave);
+    font-size: 11.5px;
+  }
+  footer button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--azul);
+    font: inherit;
+    cursor: pointer;
+  }
+  footer button:focus-visible { outline: 2px solid var(--azul); outline-offset: 2px; border-radius: 2px; }
+  #salvo { min-height: 1em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    input[type="checkbox"], input[type="checkbox"]::after { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <header class="diario" id="diario" aria-hidden="false">
+    <div>
+      <h1>Boletim+</h1>
+      <small>Ferramentas para o RCO</small>
+    </div>
+    <div class="nota vermelho" aria-hidden="true"><span>1º Tri</span><b>4.0</b></div>
+    <div class="nota verde" aria-hidden="true"><span>2º Tri</span><b>7.5</b></div>
+    <div class="nota verde" aria-hidden="true"><span>Média</span><b>6.2</b></div>
+  </header>
+
+  <form id="opcoes">
+    <label class="opcao principal">
+      <span>
+        <strong>Cores nas notas</strong>
+        <small>Verde a partir de 6,0 e vermelho abaixo, em todos os trimestres</small>
+      </span>
+      <input type="checkbox" name="cores">
+    </label>
+
+    <label class="opcao principal">
+      <span>
+        <strong>Previsão no 3º trimestre</strong>
+        <small>Botão acima da tabela que mostra o 1º e o 2º trimestre</small>
+      </span>
+      <input type="checkbox" name="previsao">
+    </label>
+
+    <fieldset id="subopcoes">
+      <legend>Com a previsão ligada</legend>
+      <label class="opcao sub">
+        <span>
+          <strong>Abrir já ligada</strong>
+          <small>O botão começa ligado ao abrir a página</small>
+        </span>
+        <input type="checkbox" name="iniciarLigado">
+      </label>
+      <label class="opcao sub">
+        <span>
+          <strong>Esconder avaliações</strong>
+          <small>Oculta AV1, AV2 e recuperações</small>
+        </span>
+        <input type="checkbox" name="ocultarAvaliacoes">
+      </label>
+      <label class="opcao sub">
+        <span>
+          <strong>Coluna Meta no 3º Tri</strong>
+          <small>Quanto falta somar para passar</small>
+        </span>
+        <input type="checkbox" name="colunaMeta">
+      </label>
+      <label class="opcao sub">
+        <span>
+          <strong>Coluna Média Anual</strong>
+          <small>Média dos três trimestres</small>
+        </span>
+        <input type="checkbox" name="colunaMedia">
+      </label>
+      <label class="opcao sub">
+        <span>
+          <strong>Números em negrito</strong>
+        </span>
+        <input type="checkbox" name="negrito">
+      </label>
+    </fieldset>
+  </form>
+
+  <footer>
+    <span id="salvo" role="status">As mudanças valem na hora.</span>
+    <button type="button" id="restaurar">Restaurar padrão</button>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

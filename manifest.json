@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Boletim+ – ferramentas para o RCO",
+  "short_name": "Boletim+",
+  "version": "0.9.2",
+  "description": "Cores nas notas e previsão anual no 3º trimestre para o RCO do Paraná. Extensão independente, sem vínculo com a SEED-PR.",
+  "minimum_chrome_version": "111",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://rco.paas.pr.gov.br/*"
+  ],
+  "icons": {
+    "16": "icones/icone-16.png",
+    "32": "icones/icone-32.png",
+    "48": "icones/icone-48.png",
+    "128": "icones/icone-128.png"
+  },
+  "action": {
+    "default_title": "Boletim+: opções",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icones/icone-16.png",
+      "32": "icones/icone-32.png",
+      "48": "icones/icone-48.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://rco.paas.pr.gov.br/*"
+      ],
+      "js": [
+        "injetado.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://rco.paas.pr.gov.br/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
